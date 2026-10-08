@@ -64,8 +64,9 @@ public class UsuarioService : IUsuarioService
             Apellido = d.Apellido.Trim(),
             Correo = correo,
             PasswordHash = passwordHash,
-            Edad = d.Edad,
-            RolId = d.RolId
+            FechaNacimiento = d.FechaNacimiento,
+            Universidad = d.Universidad.Trim(),
+            Semestre = d.Semestre
         };
 
         await _repo.CrearAsync(usuario);
@@ -104,8 +105,7 @@ public class UsuarioService : IUsuarioService
             return null;
         }
 
-        // Comparar la contraseña ingresada
-        // con el HASH almacenado en la BD
+        // Comparar la contraseña ingresada con el HASH almacenado
         var passwordCorrecto =
             BCrypt.Net.BCrypt.Verify(
                 dto.Password,
@@ -155,7 +155,6 @@ public class UsuarioService : IUsuarioService
         usuario.Nombre = d.Nombre.Trim();
         usuario.Apellido = d.Apellido.Trim();
         usuario.Correo = correo;
-        usuario.Edad = d.Edad;
         usuario.Activo = d.Activo;
 
         await _repo.ActualizarAsync(usuario);
@@ -192,7 +191,9 @@ public class UsuarioService : IUsuarioService
             Nombre = u.Nombre,
             Apellido = u.Apellido,
             Correo = u.Correo,
-            Edad = u.Edad,
+            FechaNacimiento = u.FechaNacimiento,
+            Universidad = u.Universidad,
+            Semestre = u.Semestre,
             Activo = u.Activo,
             FechaCreacion = u.FechaCreacion
         };

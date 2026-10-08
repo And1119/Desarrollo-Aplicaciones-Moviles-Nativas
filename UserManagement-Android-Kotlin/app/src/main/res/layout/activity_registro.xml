@@ -86,34 +86,40 @@
             android:inputType="textPassword" />
 
         <!-- ===================================== -->
-        <!-- EDAD -->
+        <!-- FECHA NACIMIENTO -->
         <!-- ===================================== -->
 
         <EditText
-            android:id="@+id/etEdad"
+            android:id="@+id/etFechaNacimiento"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:hint="Edad"
-            android:inputType="number" />
+            android:hint="Fecha Nacimiento (YYYY-MM-DD)"
+            android:inputType="date" />
 
         <!-- ===================================== -->
-        <!-- ROL -->
+        <!-- UNIVERSIDAD -->
         <!-- ===================================== -->
 
-        <TextView
+        <EditText
+            android:id="@+id/etUniversidad"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="5dp"
-            android:text="Rol"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="15dp"
+            android:hint="Universidad"
+            android:inputType="text" />
 
-        <Spinner
-            android:id="@+id/spRol"
+        <!-- ===================================== -->
+        <!-- SEMESTRE -->
+        <!-- ===================================== -->
+
+        <EditText
+            android:id="@+id/etSemestre"
             android:layout_width="match_parent"
-            android:layout_height="50dp" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:hint="Semestre (Número)"
+            android:inputType="number" />
 
         <!-- ===================================== -->
         <!-- BOTÓN REGISTRAR -->

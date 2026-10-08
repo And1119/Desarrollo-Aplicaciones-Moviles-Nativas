@@ -1,6 +1,5 @@
 package com.example.parcialkotlinapp
 
-import android.R.attr.password
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -24,51 +23,25 @@ class RegistroActivity : AppCompatActivity() {
         val etCorreo = findViewById<EditText>(R.id.etCorreoRegistro)
         val etPasswordRegistro = findViewById<EditText>(R.id.etPasswordRegistro)
 
-        val etEdad = findViewById<EditText>(R.id.etEdad)
-
-        val spRol = findViewById<Spinner>(R.id.spRol)
+        val etFechaNacimiento = findViewById<EditText>(R.id.etFechaNacimiento)
+        val etUniversidad = findViewById<EditText>(R.id.etUniversidad)
+        val etSemestre = findViewById<EditText>(R.id.etSemestre)
 
         val btnRegistrar = findViewById<Button>(R.id.btnRegistrar)
         val btnVolver = findViewById<Button>(R.id.btnVolver)
 
-        val tvMensaje =
-            findViewById<TextView>(R.id.tvMensajeRegistro)
-
-        // ROLES
-        val roles = arrayOf(
-            "Seleccione un rol",
-            "Administrador",
-            "Usuario"
-        )
-
-        val adaptador = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            roles
-        )
-
-        adaptador.setDropDownViewResource(
-            android.R.layout.simple_spinner_dropdown_item
-        )
-
-        spRol.adapter = adaptador
+        val tvMensaje = findViewById<TextView>(R.id.tvMensajeRegistro)
 
         // BOTÓN REGISTRAR
         btnRegistrar.setOnClickListener {
 
-            val nombre =
-                etNombre.text.toString().trim()
-
-            val apellido =
-                etApellido.text.toString().trim()
-
-            val correo =
-                etCorreo.text.toString().trim()
-
+            val nombre = etNombre.text.toString().trim()
+            val apellido = etApellido.text.toString().trim()
+            val correo = etCorreo.text.toString().trim()
             val password = etPasswordRegistro.text.toString().trim()
-
-            val edadTexto =
-                etEdad.text.toString().trim()
+            val fechaNacimiento = etFechaNacimiento.text.toString().trim()
+            val universidad = etUniversidad.text.toString().trim()
+            val semestreTexto = etSemestre.text.toString().trim()
 
             // VALIDACIONES
             if (nombre.isBlank()) {
@@ -89,52 +62,46 @@ class RegistroActivity : AppCompatActivity() {
             if (!android.util.Patterns.EMAIL_ADDRESS
                     .matcher(correo)
                     .matches()) {
-
                 etCorreo.error = "Correo no válido"
                 return@setOnClickListener
             }
+
             if (password.isBlank()) {
                 etPasswordRegistro.error = "Ingrese la contraseña"
                 return@setOnClickListener
             }
 
-            if (edadTexto.isBlank()) {
-                etEdad.error = "Ingrese la edad"
+            if (fechaNacimiento.isBlank()) {
+                etFechaNacimiento.error = "Ingrese la fecha de nacimiento"
                 return@setOnClickListener
             }
 
-            val edad = edadTexto.toIntOrNull()
-
-            if (edad == null || edad < 1 || edad > 120) {
-                etEdad.error = "Edad no válida"
+            if (universidad.isBlank()) {
+                etUniversidad.error = "Ingrese la universidad"
                 return@setOnClickListener
             }
 
-            if (spRol.selectedItemPosition == 0) {
-
-                Toast.makeText(
-                    this,
-                    "Seleccione un rol",
-                    Toast.LENGTH_SHORT
-                ).show()
-
+            if (semestreTexto.isBlank()) {
+                etSemestre.error = "Ingrese el semestre"
                 return@setOnClickListener
             }
 
-            // Para esta práctica:
-            // Administrador = 1
-            // Usuario = 2
-            val rolId = spRol.selectedItemPosition
+            val semestre = semestreTexto.toIntOrNull()
+
+            if (semestre == null || semestre < 1 || semestre > 20) {
+                etSemestre.error = "Semestre no válido"
+                return@setOnClickListener
+            }
 
             // OBJETO QUE ENVIAREMOS AL BACKEND
-
             val nuevoUsuario = CrearUsuarioRequest(
                 nombre = nombre,
                 apellido = apellido,
                 correo = correo,
-                edad = edad,
                 password = password,
-                rolId = rolId
+                fechaNacimiento = fechaNacimiento,
+                universidad = universidad,
+                semestre = semestre
             )
 
             tvMensaje.text = "Registrando usuario..."
@@ -153,8 +120,7 @@ class RegistroActivity : AppCompatActivity() {
 
                             val usuarioCreado = response.body()
 
-                            tvMensaje.text =
-                                "Usuario registrado correctamente"
+                            tvMensaje.text = "Usuario registrado correctamente"
 
                             Toast.makeText(
                                 this@RegistroActivity,
@@ -166,14 +132,14 @@ class RegistroActivity : AppCompatActivity() {
                             etNombre.text.clear()
                             etApellido.text.clear()
                             etCorreo.text.clear()
-                            etEdad.text.clear()
-
-                            spRol.setSelection(0)
+                            etPasswordRegistro.text.clear()
+                            etFechaNacimiento.text.clear()
+                            etUniversidad.text.clear()
+                            etSemestre.text.clear()
 
                         } else {
 
-                            tvMensaje.text =
-                                "Error del servidor: ${response.code()}"
+                            tvMensaje.text = "Error del servidor: ${response.code()}"
                         }
                     }
 
@@ -182,8 +148,7 @@ class RegistroActivity : AppCompatActivity() {
                         t: Throwable
                     ) {
 
-                        tvMensaje.text =
-                            "Error de conexión: ${t.message}"
+                        tvMensaje.text = "Error de conexión: ${t.message}"
                     }
                 })
         }
