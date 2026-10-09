@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.parcialkotlinapp.api.ApiClient
 import com.example.parcialkotlinapp.models.CrearUsuarioRequest
 import com.example.parcialkotlinapp.models.Usuario
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -139,7 +140,21 @@ class RegistroActivity : AppCompatActivity() {
 
                         } else {
 
-                            tvMensaje.text = "Error del servidor: ${response.code()}"
+                            // LECTURA CONTROLADA DEL ERROR (400 / MENSAJE DEL BACKEND)
+                            val errorBody = response.errorBody()?.string()
+
+                            val mensajeError = try {
+                                if (!errorBody.isNullOrEmpty()) {
+                                    val jsonObject = JSONObject(errorBody)
+                                    jsonObject.optString("mensaje", "Error del servidor: ${response.code()}")
+                                } else {
+                                    "Error del servidor: ${response.code()}"
+                                }
+                            } catch (e: Exception) {
+                                "Error del servidor: ${response.code()}"
+                            }
+
+                            tvMensaje.text = mensajeError
                         }
                     }
 
