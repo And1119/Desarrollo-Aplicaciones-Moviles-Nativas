@@ -1,8 +1,10 @@
 package com.example.parcialkotlinapp
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.parcialkotlinapp.api.ApiClient
 import com.example.parcialkotlinapp.models.CrearUsuarioRequest
@@ -12,33 +14,38 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.Calendar
+import java.util.Locale
 
 class RegistroActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_registro)
+
+        // BOTÓN FLECHA DE REGRESAR EN EL LAYOUT PERSONALIZADO
+        val btnVolver = findViewById<ImageView>(R.id.btnVolverRegistro)
+        btnVolver?.setOnClickListener {
+            finish()
+        }
 
         // COMPONENTES
         val etNombre = findViewById<EditText>(R.id.etNombre)
         val etApellido = findViewById<EditText>(R.id.etApellido)
         val etCorreo = findViewById<EditText>(R.id.etCorreoRegistro)
         val etPasswordRegistro = findViewById<EditText>(R.id.etPasswordRegistro)
-
         val etFechaNacimiento = findViewById<EditText>(R.id.etFechaNacimiento)
         val tvEdadCalculada = findViewById<TextView>(R.id.tvEdadCalculada)
         val etUniversidad = findViewById<EditText>(R.id.etUniversidad)
-        val etSemestre = findViewById<EditText>(R.id.etSemestre)
-
+        val spSemestre = findViewById<Spinner>(R.id.spSemestre)
         val btnRegistrar = findViewById<Button>(R.id.btnRegistrar)
-        val btnVolver = findViewById<Button>(R.id.btnVolver)
-
         val tvMensaje = findViewById<TextView>(R.id.tvMensajeRegistro)
 
-        // =====================================
-        // LÓGICA DE MOSTRAR DATEPICKER Y EDAD
-        // =====================================
+        // POBLAR SPINNER DE SEMESTRE (1 A 10)
+        val listaSemestres = (1..10).map { "Semestre $it" }
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, listaSemestres)
+        spSemestre.adapter = adapter
+
+        // MOSTRAR DATEPICKER Y CÁLCULO DE EDAD EXACTA
         fun mostrarDatePicker() {
             val calendario = Calendar.getInstance()
             val anioActual = calendario.get(Calendar.YEAR)
@@ -48,13 +55,11 @@ class RegistroActivity : AppCompatActivity() {
             val datePickerDialog = DatePickerDialog(
                 this,
                 { _, yearSelected, monthSelected, daySelected ->
-                    val mesFormateado = String.format("%02d", monthSelected + 1)
-                    val diaFormateado = String.format("%02d", daySelected)
+                    val mesFormateado = String.format(Locale.getDefault(), "%02d", monthSelected + 1)
+                    val diaFormateado = String.format(Locale.getDefault(), "%02d", daySelected)
                     val fechaSeleccionada = "$yearSelected-$mesFormateado-$diaFormateado"
 
                     etFechaNacimiento.setText(fechaSeleccionada)
-
-                    // CÁLCULO DE EDAD CONSIDERANDO DÍA, MES Y AÑO
                     val edad = calcularEdad(yearSelected, monthSelected, daySelected)
                     tvEdadCalculada.text = "Edad: $edad años"
                 },
@@ -65,16 +70,8 @@ class RegistroActivity : AppCompatActivity() {
             datePickerDialog.show()
         }
 
-        // Eventos para abrir el modal al presionar o al ganar foco
-        etFechaNacimiento.setOnClickListener {
-            mostrarDatePicker()
-        }
-
-        etFechaNacimiento.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                mostrarDatePicker()
-            }
-        }
+        etFechaNacimiento.setOnClickListener { mostrarDatePicker() }
+        etFechaNacimiento.setOnFocusChangeListener { _, hasFocus -> if (hasFocus) mostrarDatePicker() }
 
         // BOTÓN REGISTRAR
         btnRegistrar.setOnClickListener {
@@ -85,7 +82,9 @@ class RegistroActivity : AppCompatActivity() {
             val password = etPasswordRegistro.text.toString().trim()
             val fechaNacimiento = etFechaNacimiento.text.toString().trim()
             val universidad = etUniversidad.text.toString().trim()
-            val semestreTexto = etSemestre.text.toString().trim()
+
+            // Obtener el semestre seleccionado (1 a 10)
+            val semestre = spSemestre.selectedItemPosition + 1
 
             // VALIDACIONES
             if (nombre.isBlank()) {
@@ -103,9 +102,7 @@ class RegistroActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (!android.util.Patterns.EMAIL_ADDRESS
-                    .matcher(correo)
-                    .matches()) {
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
                 etCorreo.error = "Correo no válido"
                 return@setOnClickListener
             }
@@ -125,19 +122,6 @@ class RegistroActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (semestreTexto.isBlank()) {
-                etSemestre.error = "Ingrese el semestre"
-                return@setOnClickListener
-            }
-
-            val semestre = semestreTexto.toIntOrNull()
-
-            if (semestre == null || semestre < 1 || semestre > 20) {
-                etSemestre.error = "Semestre no válido"
-                return@setOnClickListener
-            }
-
-            // OBJETO QUE ENVIAREMOS AL BACKEND
             val nuevoUsuario = CrearUsuarioRequest(
                 nombre = nombre,
                 apellido = apellido,
@@ -149,85 +133,62 @@ class RegistroActivity : AppCompatActivity() {
             )
 
             tvMensaje.text = "Registrando usuario..."
+            btnRegistrar.isEnabled = false
 
-            // LLAMADA AL BACKEND
-            ApiClient.usuarioApi
-                .crearUsuario(nuevoUsuario)
-                .enqueue(object : Callback<Usuario> {
+            ApiClient.usuarioApi.crearUsuario(nuevoUsuario).enqueue(object : Callback<Usuario> {
+                override fun onResponse(call: Call<Usuario>, response: Response<Usuario>) {
+                    btnRegistrar.isEnabled = true
 
-                    override fun onResponse(
-                        call: Call<Usuario>,
-                        response: Response<Usuario>
-                    ) {
-
-                        if (response.isSuccessful) {
-
-                            val usuarioCreado = response.body()
-
-                            tvMensaje.text = "Usuario registrado correctamente"
-
-                            Toast.makeText(
-                                this@RegistroActivity,
-                                "Usuario creado. ID: ${usuarioCreado?.id}",
-                                Toast.LENGTH_LONG
-                            ).show()
-
-                            // Limpiar formulario
-                            etNombre.text.clear()
-                            etApellido.text.clear()
-                            etCorreo.text.clear()
-                            etPasswordRegistro.text.clear()
-                            etFechaNacimiento.text.clear()
-                            tvEdadCalculada.text = "Edad: -- años"
-                            etUniversidad.text.clear()
-                            etSemestre.text.clear()
-
-                        } else {
-
-                            // LECTURA CONTROLADA DEL ERROR (400 / MENSAJE DEL BACKEND)
-                            val errorBody = response.errorBody()?.string()
-
-                            val mensajeError = try {
-                                if (!errorBody.isNullOrEmpty()) {
-                                    val jsonObject = JSONObject(errorBody)
-                                    when {
-                                        jsonObject.has("mensaje") -> jsonObject.getString("mensaje")
-                                        jsonObject.has("message") -> jsonObject.getString("message")
-                                        jsonObject.has("title") -> jsonObject.getString("title")
-                                        else -> if (response.code() == 400) "Ya existe un usuario con ese correo" else "Error del servidor: ${response.code()}"
-                                    }
-                                } else {
-                                    if (response.code() == 400) "Ya existe un usuario con ese correo" else "Error del servidor: ${response.code()}"
-                                }
-                            } catch (e: Exception) {
-                                if (response.code() == 400) "Ya existe un usuario con ese correo" else "Error del servidor: ${response.code()}"
+                    if (response.isSuccessful) {
+                        tvMensaje.text = ""
+                        AlertDialog.Builder(this@RegistroActivity)
+                            .setTitle("Registro exitoso")
+                            .setMessage("El usuario fue creado exitosamente.")
+                            .setCancelable(false)
+                            .setPositiveButton("ACEPTAR") { _, _ ->
+                                val intent = Intent(this@RegistroActivity, LoginActivity::class.java)
+                                startActivity(intent)
+                                finish()
                             }
-
-                            tvMensaje.text = mensajeError
+                            .show()
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        val mensajeError = try {
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonObject = JSONObject(errorBody)
+                                when {
+                                    jsonObject.has("mensaje") -> jsonObject.getString("mensaje")
+                                    jsonObject.has("message") -> jsonObject.getString("message")
+                                    jsonObject.has("title") -> jsonObject.getString("title")
+                                    else -> if (response.code() == 400) "Ya existe un usuario con ese correo." else "Error del servidor: ${response.code()}"
+                                }
+                            } else {
+                                if (response.code() == 400) "Ya existe un usuario con ese correo." else "Error del servidor: ${response.code()}"
+                            }
+                        } catch (_: Exception) {
+                            if (response.code() == 400) "Ya existe un usuario con ese correo." else "Error del servidor: ${response.code()}"
                         }
+
+                        tvMensaje.text = mensajeError
+                        AlertDialog.Builder(this@RegistroActivity)
+                            .setTitle("Error de registro")
+                            .setMessage(mensajeError)
+                            .setPositiveButton("ACEPTAR", null)
+                            .show()
                     }
+                }
 
-                    override fun onFailure(
-                        call: Call<Usuario>,
-                        t: Throwable
-                    ) {
-
-                        tvMensaje.text = "Error de conexión: ${t.message}"
-                    }
-                })
-        }
-
-        // VOLVER AL LOGIN
-        btnVolver.setOnClickListener {
-            finish()
+                override fun onFailure(call: Call<Usuario>, t: Throwable) {
+                    btnRegistrar.isEnabled = true
+                    tvMensaje.text = "Error de conexión: ${t.message}"
+                }
+            })
         }
     }
 
-    // FUNCIÓN PARA CALCULAR LA EDAD EXACTA
     private fun calcularEdad(anioNac: Int, mesNac: Int, diaNac: Int): Int {
         val hoy = Calendar.getInstance()
         var edad = hoy.get(Calendar.YEAR) - anioNac
-
         if (hoy.get(Calendar.MONTH) < mesNac ||
             (hoy.get(Calendar.MONTH) == mesNac && hoy.get(Calendar.DAY_OF_MONTH) < diaNac)) {
             edad--

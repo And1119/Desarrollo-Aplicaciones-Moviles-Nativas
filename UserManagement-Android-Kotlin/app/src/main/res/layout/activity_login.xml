@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="30dp"
-    android:gravity="center">
+    android:padding="32dp"
+    android:gravity="center"
+    android:background="#FFFFFF">
 
     <!-- LOGO UCOMPENSAR -->
     <ImageView
         android:id="@+id/imgLogo"
-        android:layout_width="220dp"
-        android:layout_height="100dp"
+        android:layout_width="180dp"
+        android:layout_height="80dp"
         android:src="@drawable/logo_ucompensar"
         android:contentDescription="Logo UCompensar"
         android:scaleType="fitCenter"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="16dp" />
 
     <!-- TÍTULO -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Inicio de sesión"
-        android:textSize="28sp"
+        android:text="Iniciar sesión"
+        android:textSize="22sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:layout_marginBottom="30dp" />
+        android:textColor="#222222"
+        android:layout_marginBottom="28dp" />
 
     <!-- CORREO -->
     <EditText
@@ -34,7 +34,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Correo electrónico"
-        android:inputType="textEmailAddress" />
+        android:inputType="textEmailAddress"
+        android:layout_marginBottom="12dp" />
 
     <!-- CONTRASEÑA -->
     <EditText
@@ -43,32 +44,36 @@
         android:layout_height="wrap_content"
         android:hint="Contraseña"
         android:inputType="textPassword"
-        android:layout_marginTop="15dp" />
+        android:layout_marginBottom="24dp" />
 
     <!-- BOTÓN INGRESAR -->
     <Button
         android:id="@+id/btnIngresar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="INGRESAR"
-        android:layout_marginTop="25dp" />
+        android:backgroundTint="#6750A4"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp" />
 
-    <!-- BOTÓN CREAR CUENTA -->
+    <!-- BOTÓN / TEXTO CREAR CUENTA -->
     <Button
         android:id="@+id/btnCrearCuenta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="CREAR CUENTA"
-        android:layout_marginTop="10dp" />
+        android:backgroundTint="#6750A4"
+        android:textColor="#FFFFFF" />
 
-    <!-- MENSAJE -->
+    <!-- MENSAJE DE ERROR -->
     <TextView
         android:id="@+id/tvMensaje"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=""
         android:gravity="center"
-        android:textSize="18sp"
-        android:layout_marginTop="20dp" />
+        android:textSize="14sp"
+        android:textColor="#D32F2F"
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>

@@ -1,180 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:orientation="vertical"
+    android:background="#FFFFFF">
 
+    <!-- Flecha de regreso limpia -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="30dp">
-
-        <!-- ===================================== -->
-        <!-- LOGO -->
-        <!-- ===================================== -->
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:contentDescription="Logo UCompensar"
-            android:scaleType="fitCenter"
-            android:src="@drawable/logo_ucompensar" />
-
-        <!-- ===================================== -->
-        <!-- TÍTULO -->
-        <!-- ===================================== -->
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="25dp"
-            android:gravity="center"
-            android:text="Registro de usuario"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-
-        <!-- ===================================== -->
-        <!-- NOMBRE -->
-        <!-- ===================================== -->
-
-        <EditText
-            android:id="@+id/etNombre"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nombre"
-            android:inputType="textPersonName" />
-
-        <!-- ===================================== -->
-        <!-- APELLIDO -->
-        <!-- ===================================== -->
-
-        <EditText
-            android:id="@+id/etApellido"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:hint="Apellido"
-            android:inputType="textPersonName" />
-
-        <!-- ===================================== -->
-        <!-- CORREO -->
-        <!-- ===================================== -->
-
-        <EditText
-            android:id="@+id/etCorreoRegistro"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:hint="Correo electrónico"
-            android:inputType="textEmailAddress" />
-
-        <!-- ===================================== -->
-        <!-- CONTRASEÑA -->
-        <!-- ===================================== -->
-
-        <EditText
-            android:id="@+id/etPasswordRegistro"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:hint="Contraseña"
-            android:inputType="textPassword" />
-
-        <!-- ===================================== -->
-        <!-- FECHA NACIMIENTO (SELECCIÓN CON DATEPICKER) -->
-        <!-- ===================================== -->
-
-        <EditText
-            android:id="@+id/etFechaNacimiento"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:hint="Fecha de nacimiento (Seleccionar)"
-            android:focusable="false"
+            android:id="@+id/btnVolverRegistro"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@android:drawable/ic_menu_revert"
+            android:contentDescription="Volver"
             android:clickable="true"
-            android:cursorVisible="false"
-            android:inputType="none" />
-
-        <!-- ===================================== -->
-        <!-- EDAD CALCULADA -->
-        <!-- ===================================== -->
-
-        <TextView
-            android:id="@+id/tvEdadCalculada"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="start"
-            android:text="Edad: -- años"
-            android:textColor="#555555"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
-        <!-- ===================================== -->
-        <!-- UNIVERSIDAD -->
-        <!-- ===================================== -->
-
-        <EditText
-            android:id="@+id/etUniversidad"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:hint="Universidad"
-            android:inputType="text" />
-
-        <!-- ===================================== -->
-        <!-- SEMESTRE -->
-        <!-- ===================================== -->
-
-        <EditText
-            android:id="@+id/etSemestre"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:hint="Semestre (Número)"
-            android:inputType="number" />
-
-        <!-- ===================================== -->
-        <!-- BOTÓN REGISTRAR -->
-        <!-- ===================================== -->
-
-        <Button
-            android:id="@+id/btnRegistrar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:text="REGISTRAR" />
-
-        <!-- ===================================== -->
-        <!-- MENSAJE -->
-        <!-- ===================================== -->
-
-        <TextView
-            android:id="@+id/tvMensajeRegistro"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
-            android:text=""
-            android:textSize="17sp" />
-
-        <!-- ===================================== -->
-        <!-- BOTÓN VOLVER -->
-        <!-- ===================================== -->
-
-        <Button
-            android:id="@+id/btnVolver"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="30dp"
-            android:text="VOLVER AL LOGIN" />
-
+            android:focusable="true" />
     </LinearLayout>
 
-</ScrollView>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <!-- Logo Compensar -->
+            <ImageView
+                android:layout_width="140dp"
+                android:layout_height="65dp"
+                android:src="@drawable/logo_ucompensar"
+                android:contentDescription="Logo UCompensar"
+                android:scaleType="fitCenter"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Registro de usuario"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="#222222"
+                android:layout_marginBottom="20dp"/>
+
+            <EditText
+                android:id="@+id/etNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nombre"
+                android:layout_marginBottom="10dp"/>
+
+            <EditText
+                android:id="@+id/etApellido"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Apellido"
+                android:layout_marginBottom="10dp"/>
+
+            <EditText
+                android:id="@+id/etCorreoRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Correo electrónico"
+                android:inputType="textEmailAddress"
+                android:layout_marginBottom="10dp"/>
+
+            <EditText
+                android:id="@+id/etPasswordRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Contraseña"
+                android:inputType="textPassword"
+                android:layout_marginBottom="10dp"/>
+
+            <EditText
+                android:id="@+id/etFechaNacimiento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Fecha de nacimiento"
+                android:focusable="false"
+                android:clickable="true"/>
+
+            <TextView
+                android:id="@+id/tvEdadCalculada"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Edad: -- años"
+                android:textSize="12sp"
+                android:textColor="#666666"
+                android:layout_marginBottom="10dp"/>
+
+            <EditText
+                android:id="@+id/etUniversidad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Universidad"
+                android:layout_marginBottom="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Seleccione un semestre:"
+                android:textSize="12sp"
+                android:textColor="#666666"
+                android:layout_marginTop="4dp"/>
+
+            <Spinner
+                android:id="@+id/spSemestre"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="20dp"/>
+
+            <Button
+                android:id="@+id/btnRegistrar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="REGISTRAR"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#6750A4"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvMensajeRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="#D32F2F"
+                android:layout_marginTop="10dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
