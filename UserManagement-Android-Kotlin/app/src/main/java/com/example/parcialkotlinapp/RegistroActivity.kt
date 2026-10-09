@@ -1,5 +1,6 @@
 package com.example.parcialkotlinapp
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,7 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.Calendar
 
 class RegistroActivity : AppCompatActivity() {
 
@@ -25,6 +27,7 @@ class RegistroActivity : AppCompatActivity() {
         val etPasswordRegistro = findViewById<EditText>(R.id.etPasswordRegistro)
 
         val etFechaNacimiento = findViewById<EditText>(R.id.etFechaNacimiento)
+        val tvEdadCalculada = findViewById<TextView>(R.id.tvEdadCalculada)
         val etUniversidad = findViewById<EditText>(R.id.etUniversidad)
         val etSemestre = findViewById<EditText>(R.id.etSemestre)
 
@@ -32,6 +35,46 @@ class RegistroActivity : AppCompatActivity() {
         val btnVolver = findViewById<Button>(R.id.btnVolver)
 
         val tvMensaje = findViewById<TextView>(R.id.tvMensajeRegistro)
+
+        // =====================================
+        // LÓGICA DE MOSTRAR DATEPICKER Y EDAD
+        // =====================================
+        fun mostrarDatePicker() {
+            val calendario = Calendar.getInstance()
+            val anioActual = calendario.get(Calendar.YEAR)
+            val mesActual = calendario.get(Calendar.MONTH)
+            val diaActual = calendario.get(Calendar.DAY_OF_MONTH)
+
+            val datePickerDialog = DatePickerDialog(
+                this,
+                { _, yearSelected, monthSelected, daySelected ->
+                    val mesFormateado = String.format("%02d", monthSelected + 1)
+                    val diaFormateado = String.format("%02d", daySelected)
+                    val fechaSeleccionada = "$yearSelected-$mesFormateado-$diaFormateado"
+
+                    etFechaNacimiento.setText(fechaSeleccionada)
+
+                    // CÁLCULO DE EDAD CONSIDERANDO DÍA, MES Y AÑO
+                    val edad = calcularEdad(yearSelected, monthSelected, daySelected)
+                    tvEdadCalculada.text = "Edad: $edad años"
+                },
+                anioActual,
+                mesActual,
+                diaActual
+            )
+            datePickerDialog.show()
+        }
+
+        // Eventos para abrir el modal al presionar o al ganar foco
+        etFechaNacimiento.setOnClickListener {
+            mostrarDatePicker()
+        }
+
+        etFechaNacimiento.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                mostrarDatePicker()
+            }
+        }
 
         // BOTÓN REGISTRAR
         btnRegistrar.setOnClickListener {
@@ -73,7 +116,7 @@ class RegistroActivity : AppCompatActivity() {
             }
 
             if (fechaNacimiento.isBlank()) {
-                etFechaNacimiento.error = "Ingrese la fecha de nacimiento"
+                etFechaNacimiento.error = "Seleccione la fecha de nacimiento"
                 return@setOnClickListener
             }
 
@@ -135,6 +178,7 @@ class RegistroActivity : AppCompatActivity() {
                             etCorreo.text.clear()
                             etPasswordRegistro.text.clear()
                             etFechaNacimiento.text.clear()
+                            tvEdadCalculada.text = "Edad: -- años"
                             etUniversidad.text.clear()
                             etSemestre.text.clear()
 
@@ -146,12 +190,17 @@ class RegistroActivity : AppCompatActivity() {
                             val mensajeError = try {
                                 if (!errorBody.isNullOrEmpty()) {
                                     val jsonObject = JSONObject(errorBody)
-                                    jsonObject.optString("mensaje", "Error del servidor: ${response.code()}")
+                                    when {
+                                        jsonObject.has("mensaje") -> jsonObject.getString("mensaje")
+                                        jsonObject.has("message") -> jsonObject.getString("message")
+                                        jsonObject.has("title") -> jsonObject.getString("title")
+                                        else -> if (response.code() == 400) "Ya existe un usuario con ese correo" else "Error del servidor: ${response.code()}"
+                                    }
                                 } else {
-                                    "Error del servidor: ${response.code()}"
+                                    if (response.code() == 400) "Ya existe un usuario con ese correo" else "Error del servidor: ${response.code()}"
                                 }
                             } catch (e: Exception) {
-                                "Error del servidor: ${response.code()}"
+                                if (response.code() == 400) "Ya existe un usuario con ese correo" else "Error del servidor: ${response.code()}"
                             }
 
                             tvMensaje.text = mensajeError
@@ -172,5 +221,17 @@ class RegistroActivity : AppCompatActivity() {
         btnVolver.setOnClickListener {
             finish()
         }
+    }
+
+    // FUNCIÓN PARA CALCULAR LA EDAD EXACTA
+    private fun calcularEdad(anioNac: Int, mesNac: Int, diaNac: Int): Int {
+        val hoy = Calendar.getInstance()
+        var edad = hoy.get(Calendar.YEAR) - anioNac
+
+        if (hoy.get(Calendar.MONTH) < mesNac ||
+            (hoy.get(Calendar.MONTH) == mesNac && hoy.get(Calendar.DAY_OF_MONTH) < diaNac)) {
+            edad--
+        }
+        return edad
     }
 }

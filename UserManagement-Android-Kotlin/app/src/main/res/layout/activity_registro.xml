@@ -86,7 +86,7 @@
             android:inputType="textPassword" />
 
         <!-- ===================================== -->
-        <!-- FECHA NACIMIENTO -->
+        <!-- FECHA NACIMIENTO (SELECCIÓN CON DATEPICKER) -->
         <!-- ===================================== -->
 
         <EditText
@@ -94,8 +94,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:hint="Fecha Nacimiento (YYYY-MM-DD)"
-            android:inputType="date" />
+            android:hint="Fecha de nacimiento (Seleccionar)"
+            android:focusable="false"
+            android:clickable="true"
+            android:cursorVisible="false"
+            android:inputType="none" />
+
+        <!-- ===================================== -->
+        <!-- EDAD CALCULADA -->
+        <!-- ===================================== -->
+
+        <TextView
+            android:id="@+id/tvEdadCalculada"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="start"
+            android:text="Edad: -- años"
+            android:textColor="#555555"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <!-- ===================================== -->
         <!-- UNIVERSIDAD -->
